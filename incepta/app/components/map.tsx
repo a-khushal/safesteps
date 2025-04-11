@@ -1,54 +1,85 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { supabase } from "../supabase";
+
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
 function MapboxMap() {
-  const mapNode = React.useRef(null);
-  const [map, setMap] = React.useState<mapboxgl.Map | null>(null);
+  const mapContainer = React.useRef<HTMLDivElement>(null);
+  const mapRef = React.useRef<mapboxgl.Map | null>(null);
+  const [scamMarkers, setScamMarkers] = React.useState<mapboxgl.Marker[]>([]);
+
+  async function loadScams() {
+    const { data, error } = await supabase.from("scams").select("*");
+
+    if (error) {
+      console.error("Failed to fetch scams:", error);
+      return;
+    }
+
+    scamMarkers.forEach((marker) => marker.remove());
+
+    const newMarkers = data.map((scam: any) => {
+      const marker = new mapboxgl.Marker({ color: "orange" })
+        .setLngLat([scam.lng, scam.lat])
+        .setPopup(new mapboxgl.Popup().setText(scam.description || "Scam reported here"))
+        .addTo(mapRef.current!);
+
+      return marker;
+    });
+
+    setScamMarkers(newMarkers);
+  }
 
   React.useEffect(() => {
-    const node = mapNode.current;
-    if (typeof window === "undefined" || node === null) return;
-
-    const defaultCenter: [number, number] = [-74.5, 40]; 
+    if (!mapContainer.current) return;
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
 
-        const mapboxMap = new mapboxgl.Map({
-          container: node,
-          accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN!,
+        const map = new mapboxgl.Map({
+          container: mapContainer.current!,
           style: "mapbox://styles/mapbox/streets-v11",
           center: [longitude, latitude],
           zoom: 13,
         });
 
-        setMap(mapboxMap);
-      },
-      (error) => {
-        console.warn("Geolocation error:", error);
-        
-        const mapboxMap = new mapboxgl.Map({
-          container: node,
-          accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN!,
-          style: "mapbox://styles/mapbox/streets-v11",
-          center: defaultCenter,
-          zoom: 9,
-        });
+        mapRef.current = map;
 
-        setMap(mapboxMap);
+        new mapboxgl.Marker({ color: "blue" })
+          .setLngLat([longitude, latitude])
+          .setPopup(new mapboxgl.Popup().setText("You are here"))
+          .addTo(map);
+        
+        await loadScams();
+
+        supabase
+          .channel("realtime:scams")
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "scams" },
+            async () => {
+              await loadScams(); 
+            }
+          )
+          .subscribe();
+      },
+      (err) => {
+        console.error("Geolocation failed:", err);
+        alert("Please allow location access for the map to show your position.");
       }
     );
 
     return () => {
-      if (map) map.remove();
+      mapRef.current?.remove();
     };
   }, []);
 
-  return <div ref={mapNode} style={{ width: "100%", height: "100%" }} />;
+  return <div ref={mapContainer} style={{ width: "100%", height: "100vh" }} />;
 }
 
 export default MapboxMap;
