@@ -1,8 +1,12 @@
+
+
 "use client"
 
 import React, { useState, useRef } from 'react';
 import { Shield, Upload } from 'lucide-react';
 import { supabase } from '../supabase';
+import { GoogleGenAI } from "@google/genai";
+import { summarize } from '@/actions/summary';
 
 type ScamType = 'phishing' | 'investment' | 'romance' | 'tech_support' | 'other';
 
@@ -14,6 +18,7 @@ interface FeedbackForm {
 }
 
 function App() {
+  const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -70,8 +75,8 @@ function App() {
   
           imageUrl = publicUrlData?.publicUrl;
         }
-  
-        const ai_summary = `This appears to be a ${scamType} scam near the reported location.`;
+        
+        const ai_summary = await summarize(`You are a summarizer. I just want to have the summary in a 3-4 sentences. Please summarize the following text: ${description}`);
   
         const { error: insertError } = await supabase.from("scams").insert([
           {
