@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import React, { useState, useRef } from 'react';
@@ -8,7 +6,20 @@ import { supabase } from '../supabase';
 import { GoogleGenAI } from "@google/genai";
 import { summarize } from '@/actions/summary';
 
-type ScamType = 'phishing' | 'investment' | 'romance' | 'tech_support' | 'other';
+type ScamType =
+  | 'taxi_overcharge'
+  | 'fake_ticket'
+  | 'pickpocketing_area'
+  | 'atm_tampering'
+  | 'fake_guide'
+  | 'fake_police'
+  | 'counterfeit_products'
+  | 'accommodation_scam'
+  | 'food_menu_scam'
+  | 'currency_exchange_scam'
+  | 'online_listing_scam'
+  | 'phishing'
+  | 'other';
 
 interface FeedbackForm {
   title: string;
@@ -186,10 +197,18 @@ function App() {
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
               >
+                <option value="taxi_overcharge">Taxi Overcharge</option>
+                <option value="fake_ticket">Fake Ticket</option>
+                <option value="pickpocketing_area">Pickpocketing Area</option>
+                <option value="atm_tampering">ATM Tampering</option>
+                <option value="fake_guide">Fake Guide</option>
+                <option value="fake_police">Fake Police</option>
+                <option value="counterfeit_products">Counterfeit Products</option>
+                <option value="accommodation_scam">Accommodation Scam</option>
+                <option value="food_menu_scam">Food Menu Scam</option>
+                <option value="currency_exchange_scam">Currency Exchange Scam</option>
+                <option value="online_listing_scam">Online Listing Scam</option>
                 <option value="phishing">Phishing</option>
-                <option value="investment">Investment</option>
-                <option value="romance">Romance</option>
-                <option value="tech_support">Tech Support</option>
                 <option value="other">Other</option>
               </select>
               <p className="mt-1 text-sm text-gray-500">Choose the category that best describes this scam.</p>
