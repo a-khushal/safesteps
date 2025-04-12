@@ -23,14 +23,14 @@ function App() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
             <SignedOut>
-              <button className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
+              <div className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
                 <LogIn className="h-4 w-4 mr-1" />
                 <SignInButton />
-              </button>
-              <button className="bg-stone-700 text-white hover:bg-stone-800 px-4 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
+              </div>
+              <div className="bg-stone-700 text-white hover:bg-stone-800 px-4 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
                 <UserPlus className="h-4 w-4 mr-1" />
                 <SignUpButton />
-              </button>
+              </div>
             </SignedOut>
             <SignedIn>
                 <UserButton/>

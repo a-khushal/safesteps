@@ -3,8 +3,10 @@
 import React, { useState, useRef } from 'react';
 import { Shield, Upload } from 'lucide-react';
 import { supabase } from '../supabase';
-import { GoogleGenAI } from "@google/genai";
 import { summarize } from '@/actions/summary';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@clerk/nextjs';
+import UserProfileCard from '../components/userProfileCard';
 
 type ScamType =
   | 'taxi_overcharge'
@@ -29,7 +31,13 @@ interface FeedbackForm {
 }
 
 function App() {
-  const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY });
+  const { user } = useUser();
+  const router = useRouter();
+  if (!user) {
+    alert("Please sign in to report a scam")
+    router.push("/")
+  }
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -284,6 +292,7 @@ function App() {
         <footer className="mt-8 text-center text-sm text-gray-500">
           © 2025 Scam Spotter. All rights reserved.
         </footer>
+        <UserProfileCard />
       </div>
     </div>
   );

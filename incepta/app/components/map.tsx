@@ -4,6 +4,8 @@ import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { supabase } from "../supabase";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface Scam {
   id: string;
@@ -13,16 +15,23 @@ interface Scam {
   type: string;
   ai_summary: string;
   votes: number;
+  user_id: string;
 }
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
 function MapboxMap() {
+  const { user } = useUser();
+  const router = useRouter();
+  if (!user) {
+    alert("Please sign in to use the map")
+    router.push("/")
+  }
+
   const mapContainer = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<mapboxgl.Map | null>(null);
   const [scamMarkers, setScamMarkers] = React.useState<mapboxgl.Marker[]>([]);
   const [selectedLocation, setSelectedLocation] = React.useState<{ lat: number; lng: number } | null>(null);
 
-  
   async function loadScams() {
     const { data, error } = await supabase.from("scams").select("*");
 
@@ -123,7 +132,7 @@ export default MapboxMap;
 
 function ScamList({ lat, lng }: { lat: number; lng: number }) {
   const [scams, setScams] = React.useState<Scam[]>([]);
-  const [expandedScamId, setExpandedScamId] = React.useState<string | null>(null); // Use string | null
+  const [expandedScamId, setExpandedScamId] = React.useState<string | null>(null); 
 
   React.useEffect(() => {
     const fetchScams = async () => {

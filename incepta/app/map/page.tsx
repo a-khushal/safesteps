@@ -3,6 +3,7 @@
 import { useSession } from "@clerk/nextjs"
 import MapboxMap from "../components/map"
 import { useRouter } from "next/navigation"
+import UserProfileCard from "../components/userProfileCard"
 
 function App() {
   const session = useSession()
@@ -13,7 +14,8 @@ function App() {
   }
   return (
     <>
-      <MapboxMap />;
+      <MapboxMap />
+      <UserProfileCard />
     </>
   )
 }
