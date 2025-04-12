@@ -33,7 +33,9 @@ function App() {
               </div>
             </SignedOut>
             <SignedIn>
+              <div className='hover:cursor-pointer'>
                 <UserButton/>
+              </div>
             </SignedIn>
             </div>
 
