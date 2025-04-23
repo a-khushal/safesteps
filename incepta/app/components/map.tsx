@@ -22,10 +22,15 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 function MapboxMap() {
   const { user } = useUser();
   const router = useRouter();
-  if (!user) {
-    alert("Please sign in to use the map")
-    router.push("/")
-  }
+  React.useEffect(() => {
+    if (!user) {
+      // Ensure this code runs only on the client side
+      if (typeof window !== "undefined") {
+        alert("Please sign in to use the map");
+        router.push("/");
+      }
+    }
+  }, [user, router]);
 
   const mapContainer = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<mapboxgl.Map | null>(null);
