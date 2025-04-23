@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Shield, Upload } from 'lucide-react';
 import { supabase } from '../supabase';
 import { summarize } from '@/actions/summary';
@@ -33,10 +33,12 @@ interface FeedbackForm {
 function App() {
   const { user } = useUser();
   const router = useRouter();
-  if (!user) {
-    alert("Please sign in to report a scam")
-    router.push("/")
-  }
+  useEffect(() => {
+    if (!user && typeof window !== "undefined") {
+      alert("Please sign in to report a scam");
+      router.push("/");
+    }
+  }, [user, router]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
