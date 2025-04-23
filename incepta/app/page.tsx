@@ -17,26 +17,32 @@ function App() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <AlertTriangle className="h-8 w-8 text-stone-700" />
-              <span className="ml-2 text-xl font-semibold text-stone-800">TravelSafe</span>
+              <span className="ml-2 text-xl font-semibold text-stone-800">SafeSteps</span>
             </div>
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
             <SignedOut>
-              <div className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
-                <LogIn className="h-4 w-4 mr-1" />
-                <SignInButton />
-              </div>
-              <div className="bg-stone-700 text-white hover:bg-stone-800 px-4 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
-                <UserPlus className="h-4 w-4 mr-1" />
-                <SignUpButton />
-              </div>
+              <SignInButton mode="modal">
+                <button className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
+                  <LogIn className="h-4 w-4 mr-1" />
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="bg-stone-700 text-white hover:bg-stone-800 px-4 py-2 rounded-md text-sm font-medium flex items-center hover:cursor-pointer">
+                  <UserPlus className="h-4 w-4 mr-1" />
+                  Sign Up
+                </button>
+              </SignUpButton>
             </SignedOut>
-            <SignedIn>
-              <div className='hover:cursor-pointer'>
-                <UserButton/>
-              </div>
-            </SignedIn>
+            <div className='hover:cursor-pointer'>
+              <SignedIn>
+                <div>
+                  <UserButton/>
+                </div>
+              </SignedIn>
+            </div>
             </div>
 
             {/* Mobile menu button */}
@@ -138,7 +144,7 @@ function App() {
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold">TravelSafe</h3>
+              <h3 className="text-lg font-semibold">SafeSteps</h3>
               <p className="mt-2 text-stone-400">Making travel safer for everyone.</p>
             </div>
             <div>
@@ -165,7 +171,7 @@ function App() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-stone-700 text-center text-stone-400">
-            <p>&copy; {new Date().getFullYear()} TravelSafe. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} SafeSteps. All rights reserved.</p>
           </div>
         </div>
       </footer>
